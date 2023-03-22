@@ -17,6 +17,7 @@ export default class VCRouter extends Router {
     this.get( '/', 'PUBLIC', this.list );
     this.get( '/:id', 'PUBLIC', this.getVC );
     this.post( '/verify', 'PUBLIC', this.verify );
+    this.post( '/issue', 'PUBLIC', this.issue );
     this.post( '/vaccination', 'PUBLIC', this.issueVaccination );
     this.post( '/education', 'PUBLIC', this.issueEducation );
     this.post( '/education/cudi', 'PUBLIC', this.issueCUDI );
@@ -24,6 +25,8 @@ export default class VCRouter extends Router {
     this.post( '/education/cedia', 'PUBLIC', this.issueCedia );
     this.post( '/education/redclara', 'PUBLIC', this.issueRedClara );
     this.delete( '/:id', 'PUBLIC', this.revoke );
+    this.delete( '/revoke/:registry/:hash', 'PUBLIC', this.revokeHash );
+    
   }
 
   async list() {
@@ -47,6 +50,12 @@ export default class VCRouter extends Router {
       createdAt: vc.created_at,
       revokedAt: vc.revokedAt,
     }
+  }
+  async issue( req ) {
+    const { claimsVerifier, credential, issuer, privateKey, distribute } = req.body;
+    const vc = await vcService.issue( credential, claimsVerifier, issuer, privateKey, distribute );
+    // await sendVC( config.account, vc.data.credentialSubject.id, vc.data );
+    return { id: vc._id, credential: vc };
   }
 
   async issueVaccination( req ) {
@@ -120,6 +129,10 @@ export default class VCRouter extends Router {
     const vc = await vcService.getById( id );
     if( !vc ) throw new APIError( "VC not found", 404 )
     return await vcService.revoke( vc );
+  }
+  async revokeHash( req ) {
+    const { registry, hash } = req.params;
+    return await vcService.revokeHash( registry, hash );
   }
 
 }

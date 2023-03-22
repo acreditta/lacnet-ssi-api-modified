@@ -10,7 +10,7 @@ services:
   app:
     container_name: app
     restart: always
-    image: ghcr.io/lacchain/ssi-api:latest
+    build: .
     ports:
       - '8080:8080'
     environment:

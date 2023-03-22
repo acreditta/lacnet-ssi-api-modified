@@ -709,6 +709,74 @@
         }
       }
     },
+    
+    "/vc/issue": {
+      "post": {
+        "tags": [
+          "Verifiable Credentials"
+        ],
+        "summary": "Issue a Premade VC",
+        "description": "Generate, sign and register a LACChain Verifiable Credential ",
+        "operationId": "",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "description": "",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "claimsVerifier": {
+                  "type": "string",
+                  "description": "The Claims Verifier smart contract address where will be registered the VC",
+                  "default": "0x5967b9b16024Ffc06Ef25Af6D77de00c5C5D671A"
+                },
+                "credential": {
+                  "type": "object",
+                  "description": "The credential information",
+                  "default": {}
+                },
+                "issuer": {
+                  "type": "string",
+                  "description": "The issuer address",
+                  "default": null
+                },
+                "privateKey": {
+                  "type": "string",
+                  "description": "The issuer private key",
+                  "default": null
+                },
+                "distribute": {
+                  "type": "boolean",
+                  "description": "Distribute the VC on the LACChain network",
+                  "default": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "examples": {
+              "application/json": {
+                "id": "VC identifier"
+              }
+            }
+          },
+          "500": {
+            "description": "Error"
+          }
+        }
+      }
+    },
     "/vc/vaccination": {
       "post": {
         "tags": [
@@ -1312,6 +1380,59 @@
         }
       }
     },
+    "/vc/revoke/{registry}/{hash}": {
+      "delete": {
+        "tags": [
+          "Verifiable Credentials"
+        ],
+        "summary": "Revoke a VC",
+        "description": "Revoke a Verifiable Credential issued by the current user",
+        "operationId": "",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "registry",
+            "description": "The VC registry",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "default": null
+          },
+          {
+            "name": "hash",
+            "description": "The VC hash",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "default": null
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "examples": {
+              "application/json": {
+                "hash": "The blockchain transaction hash"
+              }
+            }
+          },
+          "404": {
+            "description": "VC not found"
+          },
+          "500": {
+            "description": "Error",
+            "examples": {
+              "application/json": false
+            }
+          }
+        }
+      }
+    },
     "/vc/verify": {
       "post": {
         "tags": [
@@ -1403,6 +1524,69 @@
             "examples": {
               "application/json": false
             }
+          }
+        }
+      }
+    },
+    "/did/create": {
+      "post": {
+        "tags": [
+          "Create DID"
+        ],
+        "summary": "Create DID",
+        "description": "Create DID and add verification method",
+        "operationId": "",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "description": "The entity information",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "credentialsRegistry": {
+                  "type": "string",
+                  "description": "The Credentials Registry address",
+                  "default": "0xbDa1238272FDA6888556449Cb77A87Fc8205E8ba"
+                },
+                "rpcUrl": {
+                  "type": "string",
+                  "description": "The RPC URL",
+                  "default": "https://writer.lacchain.net"
+                },
+                "network": {
+                  "type": "string",
+                  "description": "The network",
+                  "default": "testnet"
+                },
+                "nodeAddress": {
+                  "type": "string",
+                  "description": "The node address",
+                  "default": null
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "examples": {
+              "application/json": {
+                "did": "The DID object",
+                "verification": "The verification method object"
+              }
+            }
+          },
+          "500": {
+            "description": "Error"
           }
         }
       }

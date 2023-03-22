@@ -8,20 +8,21 @@ import { getIssuerName, getRootOfTrust, verifyCredential, verifyRootOfTrust } fr
 
 export default class VCService {
 
-  async issue( credential, verifier ) {
-    const issuerAddress = config.account.address;
+  async issue( credential, verifier, issuer = null, privateKey = null, distribute = true ) {
+
+    const issuerAddress = issuer || config.account.address;
+    const issuerPrivateKey = privateKey || config.account.privateKey;
     const claimsVerifier = new ethers.Contract( verifier, CLAIMS_VERIFIER.abi, signer );
 
     const subject = credential.credentialSubject.id.split( ':' ).slice( -1 )[0];
-
     const credentialHash = getCredentialHash( credential, issuerAddress, verifier );
-    const signature = await signCredential( credentialHash, config.account.privateKey );
-
-    const tx = await claimsVerifier.registerCredential( subject, credentialHash,
-        Math.round( moment( credential.issuanceDate ).valueOf() / 1000 ),
-        Math.round( moment( credential.expirationDate ).valueOf() / 1000 ),
-        signature, { from: issuerAddress } );
-    console.log( 'Registration Hash: ', tx );
+    const signature = await signCredential( credentialHash, issuerPrivateKey );
+    if ( distribute ) {
+      const tx = await claimsVerifier.registerCredential( subject, credentialHash,
+          Math.round( moment( credential.issuanceDate ).valueOf() / 1000 ),
+          Math.round( moment( credential.expirationDate ).valueOf() / 1000 ),
+          signature, { from: issuerAddress } );
+    }
 
     credential.proof = [{
       type: "EcdsaSecp256k1Signature2019",
@@ -42,13 +43,13 @@ export default class VCService {
       registry: credential.credentialStatus.id,
       data: credential
     } );
-
-    return await vc.save();
+    await vc.save();
+    return { credentialHash, vc };
   }
 
-  async revoke( vc ) {
-    const issuerAddress = config.account.address;
-    const credentialRegistry = new ethers.Contract( vc.registry, CREDENTIAL_REGISTRY.abi, signer );
+  async revoke( registry, vc, issuer = null ) {
+    const issuerAddress = issuer || config.account.address;
+    const credentialRegistry = new ethers.Contract( registry, CREDENTIAL_REGISTRY.abi, signer );
 
     const credentialHash = getCredentialHash( vc.data, issuerAddress, vc.verifier );
     const tx = await credentialRegistry.revokeCredential( credentialHash );
@@ -57,6 +58,12 @@ export default class VCService {
     vc.revokedAt = moment();
     await vc.save();
     return { hash: tx.hash };
+  }
+  async revokeHash( registry, hash ) {
+    const credentialRegistry = new ethers.Contract( registry, CREDENTIAL_REGISTRY.abi, signer );
+    const tx = await credentialRegistry.revokeCredential( hash );
+    
+    return { hash: tx.hash, revokedAt: moment() };
   }
 
   async verify( vc ) {

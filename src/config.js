@@ -13,7 +13,8 @@ export default {
 	network: {
 		rpc: process.env.NETWORK_RPC || "https://writer.lacchain.net",
 		nodeAddress: process.env.NODE_ADDRESS,
-		expiration: process.env.NODE_EXPIRATION
+		expiration: process.env.NODE_EXPIRATION,
+		name: process.env.NETWORK_NAME || "testnet"
 	},
 	account: {
 		address: process.env.ACCOUNT_ADDRESS,

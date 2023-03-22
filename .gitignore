@@ -3,4 +3,6 @@ node_modules
 *.iml
 mongo
 dump.rdb
+docker-compose.override.yml
 k8s
+data

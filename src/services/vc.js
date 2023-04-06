@@ -1,9 +1,8 @@
 import moment from "moment";
 import ethers from "ethers";
 import { getCredentialHash, signCredential } from "@lacchain/vc-contracts-utils";
-import VC from "../model/vc.js";
 import config from "../config.js";
-import { CLAIMS_VERIFIER, CREDENTIAL_REGISTRY, getCustomSigner } from "../util/contracts.js";
+import { CLAIMS_VERIFIER, CREDENTIAL_REGISTRY, signer, getCustomSigner } from "../util/contracts.js";
 import { getIssuerName, getRootOfTrust, verifyCredential, verifyRootOfTrust } from "../util/vc_contracts.js";
 
 export default class VCService {
@@ -12,19 +11,16 @@ export default class VCService {
 
     const issuerAddress = issuer || config.account.address;
     const issuerPrivateKey = privateKey || config.account.privateKey;
-
-    console.log(issuer);
-    console.log(privateKey);
-
-    const customSigner = getCustomSigner( privateKey );
-
+    
+    const customSigner = getCustomSigner( issuerPrivateKey );
     const claimsVerifier = new ethers.Contract( verifier, CLAIMS_VERIFIER.abi, customSigner );
 
     const subject = credential.credentialSubject.id.split( ':' ).slice( -1 )[0];
     const credentialHash = getCredentialHash( credential, issuerAddress, verifier );
     const signature = await signCredential( credentialHash, issuerPrivateKey );
+    let tx = {hash: "not distributed"}
     if ( distribute ) {
-      const tx = await claimsVerifier.registerCredential( subject, credentialHash,
+      tx = await claimsVerifier.registerCredential( subject, credentialHash,
           Math.round( moment( credential.issuanceDate ).valueOf() / 1000 ),
           Math.round( moment( credential.expirationDate ).valueOf() / 1000 ),
           signature, { from: issuerAddress } );
@@ -44,13 +40,12 @@ export default class VCService {
       type: 'SmartContract'
     };
 
-    const vc = new VC( {
+    const vc = {
       verifier,
       registry: credential.credentialStatus.id,
       data: credential
-    } );
-    await vc.save();
-    return { credentialHash, vc };
+    }
+    return { credentialHash, vc, tx: tx.hash };
   }
 
   async revoke( registry, vc, issuer = null ) {
@@ -62,11 +57,14 @@ export default class VCService {
 
     vc.status = 'revoked';
     vc.revokedAt = moment();
-    await vc.save();
     return { hash: tx.hash };
   }
-  async revokeHash( registry, hash ) {
-    const credentialRegistry = new ethers.Contract( registry, CREDENTIAL_REGISTRY.abi, signer );
+  async revokeHash( registry, hash, issuer = null, privateKey = null ) {
+    const issuerAddress = issuer || config.account.address;
+    const issuerPrivateKey = privateKey || config.account.privateKey;
+    
+    const customSigner = getCustomSigner( issuerPrivateKey );
+    const credentialRegistry = new ethers.Contract( registry, CREDENTIAL_REGISTRY.abi, customSigner );
     const tx = await credentialRegistry.revokeCredential( hash );
     
     return { hash: tx.hash, revokedAt: moment() };
@@ -94,13 +92,5 @@ export default class VCService {
     result.rootOfTrust = rootOfTrust;
 
     return result;
-  }
-
-  async getById( id ) {
-    return VC.findOne( { _id: id } );
-  }
-
-  async list() {
-    return VC.find( {} );
   }
 }

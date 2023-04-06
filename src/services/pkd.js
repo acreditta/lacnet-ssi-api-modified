@@ -1,6 +1,5 @@
 import ethers from "ethers";
 import moment from "moment";
-import PKI from '../model/pki.js';
 import { PKD_CONTRACT, signer } from "../util/contracts.js";
 
 export default class PKDService {
@@ -9,20 +8,10 @@ export default class PKDService {
     const PDKContract = new ethers.ContractFactory( PKD_CONTRACT.abi, PKD_CONTRACT.bytecode, signer );
     const pkd = await PDKContract.deploy( { gasPrice: 0 } );
     const receipt = await pkd.deployTransaction.wait();
-    const pki = new PKI( { kind: 'PKD', address: receipt.contractAddress, hash: receipt.transactionHash } );
-    await pki.save();
     return {
       address: receipt.contractAddress,
       hash: receipt.transactionHash
     };
-  }
-
-  async getAll() {
-    return PKI.find( { kind: 'PKD' } );
-  }
-
-  async getPKD( address ) {
-    return PKI.findOne( { kind: 'PKD', address } );
   }
 
   async getEntities( pkd ) {

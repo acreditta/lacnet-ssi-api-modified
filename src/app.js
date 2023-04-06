@@ -10,7 +10,6 @@ import Logger from "./util/logger.js";
 import config from "./config.js";
 import fs from "fs";
 import https from "https";
-import { initServices } from "./services/index.js";
 
 const logger = new Logger();
 const app = express();
@@ -23,14 +22,6 @@ const indexRouter = new IndexRouter( logger.instance() );
 app.use( cors() );
 app.use( express.json() );
 app.use( express.urlencoded( { extended: false } ) );
-
-
-initServices().then( () => {
-  console.log( 'Services initialized' );
-} ).catch( error => {
-  console.error( 'Initializing services', error );
-  process.exit( 1 );
-} );
 
 app.use( function( req, res, next ) {
   res.setHeader( 'Strict-Transport-Security', 'max-age=15724800; includeSubDomains' );

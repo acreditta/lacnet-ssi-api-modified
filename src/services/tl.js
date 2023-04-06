@@ -2,7 +2,6 @@ import ethers from "ethers";
 import moment from "moment";
 import config from "../config.js";
 import { TL_CONTRACT, signer } from "../util/contracts.js";
-import PKI from "../model/pki.js";
 
 export default class TLService {
 
@@ -10,20 +9,10 @@ export default class TLService {
     const TLContract = new ethers.ContractFactory( TL_CONTRACT.abi, TL_CONTRACT.bytecode, signer );
     const tl = await TLContract.deploy( parent, name, { gasPrice: 0 } );
     const receipt = await tl.deployTransaction.wait();
-    const pki = new PKI( { kind: 'TL', parent, name, address: receipt.contractAddress, hash: receipt.transactionHash } );
-    await pki.save();
     return {
       address: receipt.contractAddress,
       hash: receipt.transactionHash
     };
-  }
-
-  async getAll() {
-    return PKI.find( { kind: 'TL' } );
-  }
-
-  async getTL( address ){
-    return PKI.findOne({ kind: 'TL', address });
   }
 
   async getEntities( tl ){

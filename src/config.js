@@ -24,9 +24,6 @@ export default {
 			privateKey: process.env.ACCOUNT_PRIVATE_ENCRYPTION_KEY
 		}
 	},
-	mongo: {
-		url: process.env.MONGODB_URL || 'mongodb://localhost:27017/ssi-api'
-	},
 	passport: {
 		bearer: {
 			accessMethodID: 'bearer',

@@ -9,6 +9,13 @@ function getSigner() {
   return new ethers.Wallet( '0x' + config.account.privateKey, new ethers.providers.JsonRpcProvider( config.network.rpc ) )
 }
 
+export function getCustomSigner(privateKey) {
+  if( config.network.nodeAddress ) {
+    return new lacchain.GasModelSigner( privateKey, new lacchain.GasModelProvider( config.network.rpc ), config.network.nodeAddress, config.network.expiration );
+  }
+  return new ethers.Wallet( '0x' + privateKey, new ethers.providers.JsonRpcProvider( config.network.rpc ) )
+}
+
 export const signer = getSigner();
 
 export const PKD_CONTRACT = {

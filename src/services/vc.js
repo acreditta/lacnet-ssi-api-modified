@@ -3,7 +3,7 @@ import ethers from "ethers";
 import { getCredentialHash, signCredential } from "@lacchain/vc-contracts-utils";
 import VC from "../model/vc.js";
 import config from "../config.js";
-import { CLAIMS_VERIFIER, CREDENTIAL_REGISTRY, signer } from "../util/contracts.js";
+import { CLAIMS_VERIFIER, CREDENTIAL_REGISTRY, getCustomSigner } from "../util/contracts.js";
 import { getIssuerName, getRootOfTrust, verifyCredential, verifyRootOfTrust } from "../util/vc_contracts.js";
 
 export default class VCService {
@@ -12,7 +12,13 @@ export default class VCService {
 
     const issuerAddress = issuer || config.account.address;
     const issuerPrivateKey = privateKey || config.account.privateKey;
-    const claimsVerifier = new ethers.Contract( verifier, CLAIMS_VERIFIER.abi, signer );
+
+    console.log(issuer);
+    console.log(privateKey);
+
+    const customSigner = getCustomSigner( privateKey );
+
+    const claimsVerifier = new ethers.Contract( verifier, CLAIMS_VERIFIER.abi, customSigner );
 
     const subject = credential.credentialSubject.id.split( ':' ).slice( -1 )[0];
     const credentialHash = getCredentialHash( credential, issuerAddress, verifier );

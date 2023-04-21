@@ -62,7 +62,6 @@ export default class VCService {
   async revokeHash( registry, hash, issuer = null, privateKey = null ) {
     const issuerAddress = issuer || config.account.address;
     const issuerPrivateKey = privateKey || config.account.privateKey;
-    
     const customSigner = getCustomSigner( issuerPrivateKey );
     const credentialRegistry = new ethers.Contract( registry, CREDENTIAL_REGISTRY.abi, customSigner );
     const tx = await credentialRegistry.revokeCredential( hash );

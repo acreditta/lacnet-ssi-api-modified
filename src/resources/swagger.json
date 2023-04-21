@@ -1410,8 +1410,8 @@
         }
       }
     },
-    "/vc/revoke/{registry}/{hash}": {
-      "delete": {
+    "/vc/revoke": {
+      "put": {
         "tags": [
           "Verifiable Credentials"
         ],
@@ -1426,20 +1426,35 @@
         ],
         "parameters": [
           {
-            "name": "registry",
-            "description": "The VC registry",
-            "in": "path",
+            "name": "body",
+            "description": "",
+            "in": "body",
             "required": true,
-            "type": "string",
-            "default": null
-          },
-          {
-            "name": "hash",
-            "description": "The VC hash",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "default": null
+            "schema": {
+              "type": "object",
+              "properties": {
+                "hash": {
+                  "type": "string",
+                  "description": "The credential hash",
+                  "default": null
+                },
+                "registryAddress": {
+                  "type": "string",
+                  "description": "The Registry smart contract address",
+                  "default": "0x464c35629d4C5989618172e2023EFd0B386EFF38"
+                },
+                "issuer": {
+                  "type": "string",
+                  "description": "The issuer address",
+                  "default": null
+                },
+                "privateKey": {
+                  "type": "string",
+                  "description": "The issuer private key",
+                  "default": null
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -1447,7 +1462,8 @@
             "description": "Success",
             "examples": {
               "application/json": {
-                "hash": "The blockchain transaction hash"
+                "hash": "The blockchain transaction hash",
+                "revokedAt": "Revocation timestamp"
               }
             }
           },

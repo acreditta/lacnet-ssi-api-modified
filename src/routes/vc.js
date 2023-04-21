@@ -17,7 +17,7 @@ export default class VCRouter extends Router {
     this.post( '/verify', 'PUBLIC', this.verify );
     this.post( '/issue', 'PUBLIC', this.issue );
     this.delete( '/:id', 'PUBLIC', this.revoke );
-    this.delete( '/revoke/:registry/:hash', 'PUBLIC', this.revokeHash );
+    this.put( '/revoke', 'PUBLIC', this.revokeHash );
     
   }
   async issue( req ) {
@@ -40,8 +40,8 @@ export default class VCRouter extends Router {
   }
 
   async revokeHash( req ) {
-    const { registry, hash } = req.params;
-    return await vcService.revokeHash( registry, hash );
+    const { hash, registryAddress, issuer, privateKey } = req.body;
+    return await vcService.revokeHash( registryAddress, hash, issuer, privateKey );
   }
 
 }

@@ -1,6 +1,6 @@
 ## SSI API Modified to be used for Acreditta
 
-This is the source code of lacnet ssi-api (see README ORIG.md) with the following modifications to be used for Acreditta:
+This is the source code of lacnet ssi-api (see README ORIG.md, and take into account that this API uses the port 8080) with the following modifications to be used for Acreditta:
 
 <ul>
 <li>Modify config to include the network name (testnet or mainnet)</li>
@@ -23,19 +23,41 @@ This is the source code of lacnet ssi-api (see README ORIG.md) with the followin
 </li>
 </ul>
 
-## Deployment
+## Env config:
 
-This API must be deployed with docker, and will create two containers:
-
-<ul>
-    <li>mongo: auxiliar mongo container that stores the issued credentials and the transactions</li>
-    <li>app: THe container that runs the ssi-api on port 8080</li>
-</ul>
-
-To deploy run:
+This API uses the port 8080. Create the following environment variables (Data contained here is a functional example with a testnet node address, but you must change this variables for your own environment):
 
 ```
-docker-compose build
-docker-compose up
+ACCOUNT_ADDRESS: "0x1b06d1a0c45c85f951d2d4bb3e6617f0d9472529"
+ACCOUNT_PRIVATE_ENCRYPTION_KEY: "07c7976c13f9452931cf81240267a372ef10ade904595b6085809c550ff78bfe"
+ACCOUNT_PRIVATE_KEY: "07c7976c13f9452931cf81240267a372ef10ade904595b6085809c550ff78bfe"
+ACCOUNT_PUBLIC_ENCRYPTION_KEY: "0x1b06d1a0c45c85f951d2d4bb3e6617f0d9472529"
+NODE_ADDRESS: "0x62563b6608e45d8ffc97115695a076e900c2f6a2"
+NODE_EXPIRATION: 1736394529
 
 ```
+
+<hr />
+
+
+## Get started:
+
+<ol>
+<li>
+  Set a docker-compose-override.yml file with the enviroment variables and deploy thecontainer by running docker-compose up (run docker-compose build if you had a previousimage). If you want to deploy directly from Docker file feel free to do it (rememberto set the required enviroment variables).
+</li>
+<li>
+  Check API by fetch /healthy endpoint. Remember that this api uses the port 8080. It should  return a 200 status whith the following object:
+
+  ```
+  {
+      "message": "Healthy"
+  }
+
+  ```
+
+  If it returns an error check the deployment, check environment permissions, or restart the  deployment following this guide.
+</li>
+</ol>
+
+The endpoints of this API are being called only from lacnet-issuer-api, from src/services/issuerService and src/services/vcService, if you want to see how these endpoints are called please check those files on <a href="https://github.com/acreditta/lacnet-issuer-api.git">https://github.com/acreditta/lacnet-issuer-api.git</a>

@@ -1,14 +1,15 @@
 version: '3'
 services:
-  app:
-    container_name: app
+  ssi_api:
+    container_name: ssi_api
     restart: always
     build: .
     ports:
       - '8080:8080'
     environment:
-      MONGODB_URL: "mongodb://mongo:27017/ssi-api"
-      ACCOUNT_ADDRESS: ""
-      ACCOUNT_PRIVATE_ENCRYPTION_KEY: ""
-      ACCOUNT_PRIVATE_KEY: ""
-      ACCOUNT_PUBLIC_ENCRYPTION_KEY: ""
+      ACCOUNT_ADDRESS: "0x1b06d1a0c45c85f951d2d4bb3e6617f0d9472529"
+      ACCOUNT_PRIVATE_ENCRYPTION_KEY: "07c7976c13f9452931cf81240267a372ef10ade904595b6085809c550ff78bfe"
+      ACCOUNT_PRIVATE_KEY: "07c7976c13f9452931cf81240267a372ef10ade904595b6085809c550ff78bfe"
+      ACCOUNT_PUBLIC_ENCRYPTION_KEY: "0x1b06d1a0c45c85f951d2d4bb3e6617f0d9472529"
+      NODE_ADDRESS: "0x62563b6608e45d8ffc97115695a076e900c2f6a2"
+      NODE_EXPIRATION: 1736394529

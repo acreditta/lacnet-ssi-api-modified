@@ -5,6 +5,7 @@ import VCRouter from "./routes/vc.js";
 import PKIRouter from "./routes/pki.js";
 import RegistryRouter from "./routes/registry.js";
 import DIDRouter from "./routes/did.js";
+import HealthyRouter from "./routes/healthy.js";
 import IndexRouter from "./routes/index.js";
 import Logger from "./util/logger.js";
 import config from "./config.js";
@@ -18,6 +19,7 @@ const pkiRouter = new PKIRouter( logger.instance() );
 const registryRouter = new RegistryRouter( logger.instance() );
 const didRouter = new DIDRouter( logger.instance() );
 const indexRouter = new IndexRouter( logger.instance() );
+const healthyRouter = new HealthyRouter( logger.instance() );
 
 app.use( cors() );
 app.use( express.json() );
@@ -33,6 +35,7 @@ app.use( '/pki', pkiRouter.getRouter() );
 app.use( '/vc', vcRouter.getRouter() );
 app.use( '/registry', registryRouter.getRouter() );
 app.use( '/did', didRouter.getRouter() );
+app.use( '/healthy', healthyRouter.getRouter() );
 
 try {
   if( !config.server.ssl.enabled ) {

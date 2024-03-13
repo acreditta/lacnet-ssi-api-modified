@@ -1,10 +1,10 @@
 import bbs from "@mattrglobal/jsonld-signatures-bbs";
 import jsonld from "jsonld-signatures";
 
-import bbsContext from "./contexts/bbs.json";
-import credentialContext from "./contexts/credentialsContext.json";
-import trustedContext from "./contexts/trusted.json";
-import vaccinationContext from "./contexts/vaccination.json";
+import bbsContext from "./contexts/bbs.json" assert { type: "json" };;
+import credentialContext from "./contexts/credentialsContext.json"  assert { type: "json" };;
+import trustedContext from "./contexts/trusted.json"  assert { type: "json" };;
+import vaccinationContext from "./contexts/vaccination.json"  assert { type: "json" };;
 import { findVerificationMethod, resolve } from "./did.js";
 
 const documents = {

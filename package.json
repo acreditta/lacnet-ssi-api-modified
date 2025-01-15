@@ -14,7 +14,7 @@
   "dependencies": {
     "@fidm/x509": "^1.2.1",
     "@lacchain/did": "git+https://github.com/acreditta/lacchain-did-js.git",
-    "@lacchain/gas-model-provider": "^1.0.1",
+    "@lacchain/gas-model-provider": "1.0.1",
     "@lacchain/vc-contracts-utils": "^1.0.5",
     "@mattrglobal/jsonld-signatures-bbs": "0.10.0",
     "@mattrglobal/node-bbs-signatures": "0.12.0",

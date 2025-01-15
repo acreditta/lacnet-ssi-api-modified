@@ -31,6 +31,7 @@ export default class RegistryService {
   }
 
   async addIssuer( verifier, issuer ){
+    console.log("add verifier");
     const claimsVerifier = new ethers.Contract( verifier, CLAIMS_VERIFIER.abi, signer );
     const tx = await claimsVerifier.grantRole( ISSUER_ROLE, issuer );
 

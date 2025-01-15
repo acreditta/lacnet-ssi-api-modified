@@ -8,22 +8,47 @@ import { getIssuerName, getRootOfTrust, verifyCredential, verifyRootOfTrust } fr
 export default class VCService {
 
   async issue( credential, verifier, issuer = null, privateKey = null, distribute = true ) {
-
+    console.log("Issue");
     const issuerAddress = issuer || config.account.address;
     const issuerPrivateKey = privateKey || config.account.privateKey;
+    console.log("Private Key: "+issuerPrivateKey);
     
     const customSigner = getCustomSigner( issuerPrivateKey );
+    console.log("custom signer: "+customSigner);
+    
     const claimsVerifier = new ethers.Contract( verifier, CLAIMS_VERIFIER.abi, customSigner );
-
+    console.log("Verifier: ");
+    
     const subject = credential.credentialSubject.id.split( ':' ).slice( -1 )[0];
+    if (!credential.expirationDate) {
+      const issuanceTimestamp = Math.round(moment(credential.issuanceDate).valueOf() / 1000);
+      const defaultValidTo = 3155760000; // 100 years in milliseconds
+      credential.expirationDate = moment(issuanceTimestamp + defaultValidTo).toISOString();
+    }
+    
     const credentialHash = getCredentialHash( credential, issuerAddress, verifier );
+    console.log("Hash: "+credentialHash);
+    
     const signature = await signCredential( credentialHash, issuerPrivateKey );
+    console.log("Signature: "+signature);
+    const validFrom = Math.round( moment( credential.issuanceDate ).valueOf() / 1000 );
+    const defaultValidTo = 3155760000;
+    const validTo = credential.expirationDate ? Math.round(moment(credential.expirationDate).valueOf() / 1000) : defaultValidTo + validFrom;
+
+    if (validTo) {
+      console.log("Expiration: " + validTo);
+    } else {
+      console.log("Credential does not have an expiration date.");
+    }
+
     let tx = {hash: "not distributed"}
     if ( distribute ) {
       tx = await claimsVerifier.registerCredential( subject, credentialHash,
-          Math.round( moment( credential.issuanceDate ).valueOf() / 1000 ),
-          Math.round( moment( credential.expirationDate ).valueOf() / 1000 ),
+          validFrom,
+          validTo,
           signature, { from: issuerAddress } );
+          console.log("Tx: "+tx);
+    
     }
 
     credential.proof = [{

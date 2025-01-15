@@ -1,0 +1,768 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "Public Api Acreditta",
+    "version" : "2023-08-10T13:12:29Z",
+    "title" : "AcredittaPublicApi"
+  },
+  "host" : "publicapi-demo.acreditta.app",
+  "schemes" : [ "https" ],
+  "paths" : {
+    "/credential/issue" : {
+      "post" : {
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "IssueCredentialRequest",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/IssueCredentialRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "schema" : {
+              "$ref" : "#/definitions/IssueCredentialSuccess"
+            }
+          },
+          "406" : {
+            "description" : "406 response",
+            "schema" : {
+              "$ref" : "#/definitions/ResponseError"
+            }
+          }
+        },
+        "security" : [ {
+          "dev" : [ ]
+        } ]
+      }
+    },
+    "/credential/list" : {
+      "get" : {
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "credential_template_id",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "email",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "name",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "schema" : {
+              "$ref" : "#/definitions/ListCredentialSucess"
+            }
+          },
+          "406" : {
+            "description" : "406 response",
+            "schema" : {
+              "$ref" : "#/definitions/ResponseError"
+            }
+          }
+        },
+        "security" : [ {
+          "dev" : [ ]
+        } ]
+      }
+    },
+    "/credential/record/{credential_id}" : {
+      "get" : {
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "credential_id",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "file_type",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "for_printing",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "schema" : {
+              "$ref" : "#/definitions/CredentialSucess"
+            }
+          },
+          "406" : {
+            "description" : "406 response",
+            "schema" : {
+              "$ref" : "#/definitions/ResponseError"
+            }
+          }
+        }
+      }
+    },
+    "/credential/visual/{uuid}" : {
+      "get" : {
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "uuid",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "schema" : {
+              "$ref" : "#/definitions/Empty"
+            }
+          },
+          "406" : {
+            "description" : "406 response",
+            "schema" : {
+              "$ref" : "#/definitions/ResponseError"
+            }
+          }
+        }
+      }
+    },
+    "/credential/{credential_id}" : {
+      "get" : {
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "credential_id",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "schema" : {
+              "$ref" : "#/definitions/CredentialSucess"
+            }
+          },
+          "406" : {
+            "description" : "406 response",
+            "schema" : {
+              "$ref" : "#/definitions/ResponseError"
+            }
+          }
+        },
+        "security" : [ {
+          "dev" : [ ]
+        } ]
+      }
+    },
+    "/login" : {
+      "post" : {
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "LoginRequest",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/LoginRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "schema" : {
+              "$ref" : "#/definitions/LoginSuccess"
+            }
+          },
+          "401" : {
+            "description" : "401 response",
+            "schema" : {
+              "$ref" : "#/definitions/LoginError"
+            }
+          }
+        }
+      }
+    },
+    "/login/refresh-token" : {
+      "post" : {
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "schema" : {
+              "$ref" : "#/definitions/Empty"
+            }
+          },
+          "406" : {
+            "description" : "406 response"
+          }
+        }
+      }
+    },
+    "/login/token" : {
+      "get" : {
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "token",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "schema" : {
+              "$ref" : "#/definitions/LoginTokenSucess"
+            }
+          },
+          "406" : {
+            "description" : "406 response",
+            "schema" : {
+              "$ref" : "#/definitions/ResponseError"
+            }
+          }
+        }
+      }
+    },
+    "/swagger" : {
+      "get" : {
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "schema" : {
+              "$ref" : "#/definitions/Empty"
+            }
+          }
+        }
+      }
+    },
+    "/swagger/{proxy+}" : {
+      "get" : {
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "proxy",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "schema" : {
+              "$ref" : "#/definitions/Empty"
+            }
+          }
+        }
+      }
+    },
+    "/template/list" : {
+      "get" : {
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "achievement_code",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "name",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tags",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "ordering",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "credential_template_type",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "schema" : {
+              "$ref" : "#/definitions/GetTemplateSucess"
+            }
+          },
+          "406" : {
+            "description" : "406 response",
+            "schema" : {
+              "$ref" : "#/definitions/ResponseError"
+            }
+          }
+        },
+        "security" : [ {
+          "dev" : [ ]
+        } ]
+      }
+    }
+  },
+  "securityDefinitions" : {
+    "dev" : {
+      "type" : "apiKey",
+      "name" : "Authorization",
+      "in" : "header",
+      "x-amazon-apigateway-authtype" : "cognito_user_pools"
+    }
+  },
+  "definitions" : {
+    "ListCredentialSucessResultsItem" : {
+      "type" : "object",
+      "required" : [ "isPublic", "issuedAt", "issuedTo", "issuerOrganization", "provider", "status", "transactionBlock", "updatedAt", "uuid" ],
+      "properties" : {
+        "uuid" : {
+          "type" : "string"
+        },
+        "status" : {
+          "type" : "string"
+        },
+        "isPublic" : {
+          "type" : "boolean"
+        },
+        "updatedAt" : {
+          "type" : "string"
+        },
+        "issuedTo" : {
+          "type" : "string"
+        },
+        "issuerOrganization" : {
+          "type" : "string"
+        },
+        "issuedAt" : {
+          "type" : "string"
+        },
+        "provider" : {
+          "type" : "string"
+        },
+        "transactionBlock" : {
+          "type" : "string"
+        },
+        "acceptedAt" : {
+          "type" : "string"
+        }
+      }
+    },
+    "CredentialSucessIssuedTo" : {
+      "type" : "object",
+      "required" : [ "did", "email" ],
+      "properties" : {
+        "email" : {
+          "type" : "string",
+          "format" : "email"
+        },
+        "did" : {
+          "type" : "string"
+        }
+      }
+    },
+    "CredentialSucess" : {
+      "type" : "object",
+      "required" : [ "acredittaHosting", "awardedAt", "createdAt", "expiresAt", "issuedAt", "issuedTo", "issuerOrganization", "status", "transactionBlock" ],
+      "properties" : {
+        "status" : {
+          "type" : "string"
+        },
+        "acredittaHosting" : {
+          "type" : "object",
+          "properties" : {
+            "isPublic" : {
+              "type" : "boolean"
+            },
+            "url" : {
+              "type" : "string",
+              "format" : "uri"
+            },
+            "urlClaimScreen" : {
+              "type" : "string",
+              "format" : "uri"
+            }
+          }
+        },
+        "createdAt" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "awardedAt" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "expiresAt" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "issuedTo" : {
+          "$ref" : "#/definitions/CredentialSucessIssuedTo"
+        },
+        "issuerOrganization" : {
+          "$ref" : "#/definitions/CredentialSucessIssuerOrganization"
+        },
+        "issuedAt" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "transactionBlock" : {
+          "type" : "string"
+        },
+        "credentialTemplateId" : {
+          "type" : "string"
+        },
+        "firstName" : {
+          "type" : "string"
+        },
+        "lastName" : {
+          "type" : "string"
+        },
+        "licenseNumber" : {
+          "type" : "string"
+        },
+        "creditHours" : {
+          "type" : "integer"
+        },
+        "evidences" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/CredentialSucessEvidencesItem"
+          }
+        },
+        "evidenceAnnexe" : {
+          "$ref" : "#/definitions/CredentialSucessEvidencesItem"
+        }
+      },
+      "title" : "CredentialSuccess"
+    },
+    "ResponseError" : {
+      "type" : "object",
+      "required" : [ "errors", "message", "statusCode" ],
+      "properties" : {
+        "errors" : {
+          "type" : "object",
+          "properties" : { }
+        },
+        "statusCode" : {
+          "type" : "integer"
+        },
+        "message" : {
+          "type" : "string"
+        }
+      }
+    },
+    "LoginError" : {
+      "type" : "object",
+      "required" : [ "errors", "message", "statusCode" ],
+      "properties" : {
+        "errors" : {
+          "type" : "object",
+          "properties" : { }
+        },
+        "statusCode" : {
+          "type" : "integer"
+        },
+        "message" : {
+          "type" : "string"
+        }
+      }
+    },
+    "LoginSuccess" : {
+      "type" : "object",
+      "required" : [ "idToken", "refreshToken" ],
+      "properties" : {
+        "idToken" : {
+          "type" : "string"
+        },
+        "refreshToken" : {
+          "type" : "string"
+        }
+      }
+    },
+    "IssueCredentialSuccess" : {
+      "type" : "object",
+      "required" : [ "credentialId", "transactionBlock" ],
+      "properties" : {
+        "credentialId" : {
+          "type" : "integer"
+        },
+        "transactionBlock" : {
+          "type" : "string"
+        },
+        "acceptanceLink" : {
+          "type" : "string",
+          "format" : "uri"
+        },
+        "rejectionLink" : {
+          "type" : "string",
+          "format" : "uri"
+        }
+      }
+    },
+    "LoginRequest" : {
+      "type" : "object",
+      "required" : [ "password", "username" ],
+      "properties" : {
+        "username" : {
+          "type" : "string"
+        },
+        "password" : {
+          "type" : "string",
+          "minLength" : 8
+        }
+      }
+    },
+    "IssueCredentialRequest" : {
+      "type" : "object",
+      "required" : [ "awardedAt", "credentialTemplateId", "credentialType", "email", "evidences", "expiresAt", "firstName", "identification", "issuedAt", "lastName", "licenseNumber", "sendNotification" ],
+      "properties" : {
+        "credentialTemplateId" : {
+          "type" : "string"
+        },
+        "firstName" : {
+          "type" : "string"
+        },
+        "lastName" : {
+          "type" : "string"
+        },
+        "email" : {
+          "type" : "string",
+          "format" : "email"
+        },
+        "identification" : {
+          "type" : "string"
+        },
+        "issuedAt" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "awardedAt" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "expiresAt" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "issuingTags" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "evidences" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/IssueCredentialRequestEvidencesItem"
+          }
+        },
+        "sendNotification" : {
+          "type" : "boolean"
+        },
+        "credentialType" : {
+          "type" : "string",
+          "enum" : [ "badge", "certificate" ]
+        },
+        "licenseNumber" : {
+          "type" : "string"
+        },
+        "creditHours" : {
+          "type" : "integer"
+        },
+        "evidenceAnnexe" : {
+          "$ref" : "#/definitions/IssueCredentialRequestEvidencesItem"
+        }
+      },
+      "title" : "IssueCredentialRequest"
+    },
+    "CredentialSucessIssuerOrganization" : {
+      "type" : "object",
+      "required" : [ "did" ],
+      "properties" : {
+        "orgId" : {
+          "type" : "integer"
+        },
+        "orgName" : {
+          "type" : "string"
+        },
+        "did" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ListCredentialSucess" : {
+      "type" : "object",
+      "required" : [ "count", "results" ],
+      "properties" : {
+        "count" : {
+          "type" : "integer"
+        },
+        "results" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/ListCredentialSucessResultsItem"
+          }
+        }
+      }
+    },
+    "Empty" : {
+      "type" : "object",
+      "title" : "Empty Schema"
+    },
+    "GetTemplateSucess" : {
+      "type" : "object",
+      "required" : [ "count", "results" ],
+      "properties" : {
+        "count" : {
+          "type" : "integer"
+        },
+        "results" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/GetTemplateSucessResultsItem"
+          }
+        }
+      },
+      "title" : "GetTemplateSuccess"
+    },
+    "IssueCredentialRequestEvidencesItem" : {
+      "type" : "object",
+      "required" : [ "description", "name", "url" ],
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        },
+        "description" : {
+          "type" : "string"
+        },
+        "url" : {
+          "type" : "string",
+          "format" : "uri"
+        }
+      }
+    },
+    "LoginTokenSucess" : {
+      "type" : "object",
+      "required" : [ "id", "idOrg", "idToken", "nameOrg", "refreshToken", "rol" ],
+      "properties" : {
+        "id" : {
+          "type" : "integer"
+        },
+        "idOrg" : {
+          "type" : "integer"
+        },
+        "nameOrg" : {
+          "type" : "string"
+        },
+        "rol" : {
+          "type" : "string"
+        },
+        "idToken" : {
+          "type" : "string"
+        },
+        "refreshToken" : {
+          "type" : "string"
+        }
+      }
+    },
+    "GetTemplateSucessResultsItem" : {
+      "type" : "object",
+      "required" : [ "createdAt", "credentialTemplateId", "getIssueCount", "imageUrl", "name", "previousVersions", "status" ],
+      "properties" : {
+        "credentialTemplateId" : {
+          "type" : "string"
+        },
+        "imageUrl" : {
+          "type" : "string",
+          "format" : "uri"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "status" : {
+          "type" : "string"
+        },
+        "getIssueCount" : {
+          "type" : "integer"
+        },
+        "previousVersions" : {
+          "type" : "array",
+          "items" : {
+            "type" : "object",
+            "properties" : {
+              "credentialTemplateId" : {
+                "type" : "string"
+              },
+              "version" : {
+                "type" : "integer"
+              }
+            },
+            "required" : [ "credentialTemplateId", "version" ]
+          }
+        },
+        "createdAt" : {
+          "type" : "string",
+          "format" : "date-time"
+        }
+      }
+    },
+    "CredentialSucessEvidencesItem" : {
+      "type" : "object",
+      "required" : [ "description", "name", "url" ],
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        },
+        "description" : {
+          "type" : "string"
+        },
+        "url" : {
+          "type" : "string",
+          "format" : "uri"
+        }
+      }
+    }
+  },
+  "x-amazon-apigateway-endpoint-configuration" : {
+    "disableExecuteApiEndpoint" : true
+  }
+}

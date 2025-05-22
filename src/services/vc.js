@@ -43,10 +43,16 @@ export default class VCService {
 
     let tx = {hash: "not distributed"}
     if ( distribute ) {
+      let tx_estimate = await claimsVerifier.estimateGas.registerCredential( subject, credentialHash,
+        validFrom,
+        validTo,
+        signature, { from: issuerAddress } );
+      console.log("Gas estimate: "+tx_estimate);
+
       tx = await claimsVerifier.registerCredential( subject, credentialHash,
           validFrom,
           validTo,
-          signature, { from: issuerAddress } );
+          signature, { from: issuerAddress, gasLimit: 550000 } );
           console.log("Tx: "+tx);
     
     }

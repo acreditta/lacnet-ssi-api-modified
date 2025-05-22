@@ -61,3 +61,11 @@ NODE_EXPIRATION: 1736394529
 </ol>
 
 The endpoints of this API are being called only from lacnet-issuer-api, from src/services/issuerService and src/services/vcService, if you want to see how these endpoints are called please check those files on <a href="https://github.com/acreditta/lacnet-issuer-api.git">https://github.com/acreditta/lacnet-issuer-api.git</a>
+
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 919127997747.dkr.ecr.us-east-1.amazonaws.com
+docker build -t lacnet-api-ssi . --platform linux/amd64
+
+docker tag lacnet-api-ssi:latest 919127997747.dkr.ecr.us-east-1.amazonaws.com/lacnet-api-ssi:latest
+
+
+ocker push 919127997747.dkr.ecr.us-east-1.amazonaws.com/lacnet-api-ssi:latest

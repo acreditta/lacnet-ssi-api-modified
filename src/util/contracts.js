@@ -4,12 +4,12 @@ import ethers from "ethers";
 
 function getSigner() {
   if( config.network.nodeAddress ) {
-    if( config.network.nodeAddress ) {
-      return new lacchain.GasModelSigner( config.account.privateKey, new lacchain.GasModelProvider( config.network.rpc ), config.network.nodeAddress, config.network.expiration );
+    const now = new Date();
+    const expirationDate = now.getTime() + (1000 * 60 * 5);
+    
+      return new lacchain.GasModelSigner( config.account.privateKey, new lacchain.GasModelProvider( config.network.rpc ), config.network.nodeAddress, expirationDate );
     }
     return new ethers.Wallet( '0x' + config.account.privateKey, new ethers.providers.JsonRpcProvider( config.network.rpc ) )
-  }
-  return new ethers.Wallet( '0x' + config.account.privateKey, new ethers.providers.JsonRpcProvider( config.network.rpc ) )
 }
 
 export function getCustomSigner(privateKey) {
